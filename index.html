@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elektro Payrhuber</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            /* Colour Palette */
+            --color-bg: #F7F7F5;
+            --color-surface: #FFFFFF;
+            --color-text: #1C1C1A;
+            --color-text-muted: #6B6B66;
+            --color-accent: #E5B800;
+            --color-highlight: #2C363F;
+            
+            /* Typography */
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            --text-xs: clamp(0.75rem, 1.5vw, 0.875rem);
+            --text-sm: clamp(0.875rem, 1.8vw, 1rem);
+            --text-base: clamp(1rem, 2vw, 1.125rem);
+            --text-lg: clamp(1.125rem, 2.5vw, 1.375rem);
+            --text-xl: clamp(1.375rem, 3vw, 1.75rem);
+            --text-2xl: clamp(1.75rem, 4vw, 2.5rem);
+            --text-3xl: clamp(2.25rem, 5vw, 3.5rem);
+            --text-4xl: clamp(3rem, 7vw, 5rem);
+            
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --space-24: 6rem;
+            --space-32: 8rem;
+            
+            --section-padding: clamp(4rem, 10vw, 8rem);
+            
+            /* Z-Index Stack */
+            --z-base: 0;
+            --z-raised: 10;
+            --z-dropdown: 100;
+            --z-sticky: 200;
+            --z-overlay: 500;
+            --z-modal: 1000;
+            --z-toast: 2000;
+            --z-max: 9000;
+        }
+
+        /* Reset & Base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            overflow-x: hidden; /* Prevent horizontal scroll at root to protect fixed positioning */
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--color-text);
+        }
+
+        p {
+            margin-bottom: var(--space-4);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 4px;
+        }
+
+        /* Utilities */
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+
+        .section {
+            padding: var(--section-padding) 0;
+        }
+
+        .text-accent { color: var(--color-accent); }
+        .text-muted { color: var(--color-text-muted); }
+        
+        [data-lucide] {
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .icon-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45em;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: var(--text-sm);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            position: relative;
+            z-index: var(--z-raised);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--color-accent);
+            color: var(--color-text);
+        }
+
+        .btn-primary:hover {
+            background-color: #d1a800;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--color-text);
+            color: var(--color-text);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--color-text);
+            color: var(--color-surface);
+        }
+
+        /* Skip Link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-accent);
+            color: var(--color-text);
+            padding: 8px;
+            z-index: 9999;
+            transition: top 0.2s;
+        }
+        .skip-link:focus { top: 0; }
+
+        /* Header & Navigation */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5rem;
+            z-index: 1001; /* Strict literal rule */
+            background: var(--color-bg);
+            border-bottom: 1px solid rgba(28, 28, 26, 0.05);
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            position: relative;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: var(--text-xl);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--color-text);
+        }
+
+        .desktop-nav {
+            display: none;
+        }
+
+        .desktop-nav ul {
+            display: flex;
+            gap: var(--space-8);
+            list-style: none;
+        }
+
+        .desktop-nav a {
+            font-family: var(--font-heading);
+            font-weight: 500;
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .desktop-nav a:hover {
+            color: var(--color-accent);
+        }
+
+        /* Mobile Nav Toggle */
+        .nav-toggle {
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1002; /* Strict literal rule */
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: var(--color-text);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-toggle[aria-expanded="true"] span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        .nav-toggle[aria-expanded="true"] span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .nav-toggle[aria-expanded="true"] span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* Mobile Overlay */
+        .mobile-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000; /* Strict literal rule */
+            background: var(--color-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-nav-list {
+            list-style: none;
+            text-align: center;
+        }
+
+        .mobile-nav-list a {
+            display: block;
+            font-family: var(--font-heading);
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            padding: 1rem 0;
+            color: var(--color-text);
+        }
+
+        @media (min-width: 769px) {
+            .nav-toggle { display: none; pointer-events: none; }
+            .desktop-nav { display: block; }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .hero-content {
+            background-color: #1C1C1A;
+            color: var(--color-surface);
+            /* Include 5rem header offset + natural padding */
+            padding: calc(5rem + var(--space-12)) var(--space-6) var(--space-12);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-content {
+                padding: calc(5rem + var(--space-24)) 10vw var(--space-24);
+            }
+        }
+
+        .hero-headline {
+            font-size: var(--text-4xl);
+            color: var(--color-accent);
+            margin-bottom: var(--space-6);
+            line-height: 1.05;
+        }
+
+        .hero-subhead {
+            font-size: var(--text-lg);
+            color: #A3A39F;
+            margin-bottom: var(--space-8);
+            max-width: 480px;
+        }
+
+        .hero-image {
+            height: 50vh;
+            width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-image {
+                height: 100vh;
+            }
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-8);
+            margin-top: var(--space-12);
+        }
+
+        @media (min-width: 768px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .service-card {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-accent);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+        }
+
+        .service-img-wrapper {
+            height: 240px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .service-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .service-card:hover .service-img-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .service-content {
+            padding: var(--space-6);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-title {
+            font-size: var(--text-xl);
+            margin-bottom: var(--space-4);
+        }
+
+        .service-desc {
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-6);
+            flex-grow: 1;
+        }
+
+        .service-link {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .service-link:hover {
+            color: var(--color-accent);
+        }
+
+        /* Company Section */
+        .company-section {
+            position: relative;
+            padding: var(--space-24) 0;
+        }
+
+        .company-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+        }
+
+        .company-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .company-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(28, 28, 26, 0.4); /* Dark overlay for image */
+        }
+
+        .company-content-box {
+            background: var(--color-surface);
+            padding: var(--space-8);
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        @media (min-width: 768px) {
+            .company-content-box {
+                padding: var(--space-12);
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: var(--space-12);
+                align-items: center;
+            }
+        }
+
+        .company-quote {
+            font-family: var(--font-heading);
+            font-size: var(--text-2xl);
+            line-height: 1.2;
+            color: var(--color-accent);
+            border-left: 4px solid var(--color-accent);
+            padding-left: var(--space-4);
+        }
+
+        .company-text p {
+            margin-bottom: var(--space-4);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background-color: var(--color-highlight);
+            color: var(--color-surface);
+            padding: var(--space-16) 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-8);
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .stat-number {
+            font-family: var(--font-heading);
+            font-size: var(--text-4xl);
+            color: var(--color-accent);
+            line-height: 1;
+            margin-bottom: var(--space-2);
+        }
+
+        .stat-label {
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.9;
+        }
+
+        /* Brands Section */
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: rgba(28, 28, 26, 0.1);
+            border: 1px solid rgba(28, 28, 26, 0.1);
+            margin-top: var(--space-12);
+        }
+
+        @media (min-width: 768px) {
+            .brands-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .brand-item {
+            background: var(--color-surface);
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: var(--text-lg);
+            color: var(--color-text-muted);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .brand-item:hover {
+            color: var(--color-text);
+            background: #FAFAF8;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-12);
+        }
+
+        @media (min-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .contact-block {
+            margin-bottom: var(--space-6);
+        }
+
+        .contact-block h3 {
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-4);
+            border-bottom: 1px solid rgba(28, 28, 26, 0.1);
+            padding-bottom: var(--space-2);
+        }
+
+        .contact-row {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            margin-bottom: var(--space-3);
+            color: var(--color-text-muted);
+        }
+
+        .contact-row i {
+            color: var(--color-accent);
+            margin-top: 0.2rem;
+        }
+
+        /* Footer */
+        .site-footer {
+            background-color: #1C1C1A;
+            color: #FAFAF8;
+            padding: clamp(4rem, 8vw, 7rem) var(--space-6) 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-12);
+            max-width: 1280px;
+            margin: 0 auto;
+            margin-bottom: var(--space-12);
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 2fr 1fr 1fr;
+            }
+        }
+
+        .footer-brand .logo {
+            color: var(--color-surface);
+            margin-bottom: var(--space-4);
+            display: block;
+        }
+
+        .footer-tagline {
+            color: #A3A39F;
+            margin-bottom: var(--space-6);
+            max-width: 300px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: var(--space-4);
+        }
+
+        .footer-social a {
+            color: var(--color-surface);
+            opacity: 0.7;
+        }
+
+        .footer-social a:hover {
+            opacity: 1;
+            color: var(--color-accent);
+        }
+
+        .footer-heading {
+            font-family: var(--font-heading);
+            font-size: var(--text-base);
+            font-weight: 700;
+            margin-bottom: var(--space-6);
+            color: var(--color-surface);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-list {
+            list-style: none;
+        }
+
+        .footer-list li {
+            margin-bottom: var(--space-3);
+        }
+
+        .footer-list a, .footer-list button {
+            color: #A3A39F;
+            font-size: var(--text-sm);
+            text-align: left;
+            padding: 0;
+            display: inline-block;
+        }
+
+        .footer-list a:hover, .footer-list button:hover {
+            color: var(--color-accent);
+        }
+
+        .footer-bottom {
+            max-width: 1280px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            font-size: var(--text-xs);
+            color: #A3A39F;
+        }
+
+        @media (min-width: 768px) {
+            .footer-bottom {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: var(--z-modal);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: var(--space-4);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--color-surface);
+            width: 100%;
+            max-width: 480px;
+            padding: var(--space-8);
+            border-radius: 4px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: var(--color-text-muted);
+            padding: 0.5rem;
+        }
+
+        .modal-close:hover {
+            color: var(--color-accent);
+        }
+
+        .modal-title {
+            font-size: var(--text-2xl);
+            margin-bottom: var(--space-4);
+            padding-right: var(--space-8);
+        }
+
+        .modal-body {
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-6);
+        }
+
+        .modal-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            margin-top: var(--space-4);
+        }
+
+        .modal-links a {
+            color: var(--color-accent);
+            font-weight: 500;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: var(--space-4);
+            left: var(--space-4);
+            right: var(--space-4);
+            z-index: var(--z-toast);
+            background: var(--color-surface);
+            padding: var(--space-6);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(28, 28, 26, 0.1);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            transform: translateY(150%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cookie-banner.active {
+            transform: translateY(0);
+        }
+
+        @media (min-width: 768px) {
+            .cookie-banner {
+                left: auto;
+                right: var(--space-6);
+                bottom: var(--space-6);
+                max-width: 400px;
+            }
+        }
+
+        .cookie-text {
+            font-size: var(--text-sm);
+            color: var(--color-text-muted);
+        }
+
+        .cookie-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .cookie-actions .btn {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            font-size: var(--text-xs);
+        }
+
+    </style>
+</head>
+<body>
+<!-- DEMO NOTICE BANNER - benedictjaros.com -->
+<style>
+#__demo_spacer{display:block;}
+#__demo_notice,#__demo_notice *{box-sizing:border-box;margin:0;padding:0;}
+#__demo_notice{
+  position:fixed;top:0;left:0;right:0;z-index:99999;
+  background:rgba(9,9,11,.97);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  font-family:system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+}
+#__demo_inner{
+  max-width:1280px;margin:0 auto;
+  padding:0 44px 0 18px;min-height:38px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+#__demo_dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:#f5c842;box-shadow:0 0 7px rgba(245,200,66,.55);}
+#__demo_label{color:#f5c842;font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;}
+#__demo_divider{color:rgba(255,255,255,.15);font-size:12px;flex-shrink:0;}
+#__demo_text{color:rgba(255,255,255,.45);font-size:11.5px;line-height:1.45;flex:1 1 160px;}
+#__demo_links{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+#__demo_links a{
+  color:rgba(255,255,255,.38);font-size:11px;text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,.14);
+  transition:color .15s,border-color .15s;white-space:nowrap;
+}
+#__demo_links a:hover{color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.4);}
+#__demo_link_sep{color:rgba(255,255,255,.15);font-size:10px;}
+#__demo_close{
+  position:absolute;right:0;top:0;bottom:0;width:40px;
+  background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.28);font-size:16px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:color .15s;
+}
+#__demo_close:hover{color:rgba(255,255,255,.7);}
+@media(max-width:560px){
+  #__demo_inner{padding:7px 44px 7px 14px;gap:6px;}
+  #__demo_text{font-size:11px;flex:1 1 100%;order:3;}
+  #__demo_dot,#__demo_label{order:1;}
+  #__demo_divider{order:2;}
+  #__demo_links{order:4;}
+}
+</style>
+<div id="__demo_spacer"></div>
+<div id="__demo_notice" role="banner" aria-label="Demo notice">
+  <div id="__demo_inner">
+    <span id="__demo_dot"></span>
+    <span id="__demo_label">Demo</span>
+    <span id="__demo_divider">/</span>
+    <span id="__demo_text">Unofficial remake &mdash; not the real website. All content &amp; trademarks belong to their owners.</span>
+    <div id="__demo_links">
+      <a href="https://benedictjaros.com/impressum" target="_blank" rel="noopener noreferrer">Impressum</a>
+      <span id="__demo_link_sep">&middot;</span>
+      <a href="https://benedictjaros.com/datenschutz" target="_blank" rel="noopener noreferrer">Datenschutz</a>
+    </div>
+  </div>
+  <button id="__demo_close" aria-label="Close demo notice">&#x2715;</button>
+</div>
+<script>
+(function () {
+  var spacer = document.getElementById('__demo_spacer');
+  var b = document.getElementById('__demo_notice');
+  var x = document.getElementById('__demo_close');
+  if (!b || !spacer) return;
+  function sync() { spacer.style.height = b.offsetHeight + 'px'; }
+  function hide() {
+    b.style.display = 'none'; spacer.style.height = '0';
+    try { sessionStorage.setItem('__demo_closed', '1'); } catch (e) {}
+  }
+  try { if (sessionStorage.getItem('__demo_closed')) { b.style.display = 'none'; spacer.style.height = '0'; return; } } catch (e) {}
+  sync();
+  window.addEventListener('resize', function () { if (b.style.display !== 'none') sync(); });
+  if (x) x.addEventListener('click', hide);
+}());
+</script>
+
+
+    <a href="#main" class="skip-link">Zum Inhalt springen</a>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="#" class="logo">Elektro Payrhuber</a>
+            
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="#leistungen">Leistungen</a></li>
+                    <li><a href="#unternehmen">Unternehmen</a></li>
+                    <li><a href="#kontakt">Kontakt</a></li>
+                </ul>
+            </nav>
+
+            <button class="nav-toggle" aria-expanded="false" aria-label="Menü öffnen">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="mobile-overlay">
+        <nav>
+            <ul class="mobile-nav-list">
+                <li><a href="#leistungen">Leistungen</a></li>
+                <li><a href="#unternehmen">Unternehmen</a></li>
+                <li><a href="#kontakt">Kontakt</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main id="main">
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-headline">Gut beraten statt teuer bezahlt...</h1>
+                <p class="hero-subhead">Ihr verlässlicher Partner für Elektrohandel, Installation und Planung. Präzision und Hausverstand seit 1955.</p>
+                <div>
+                    <a href="#leistungen" class="btn btn-primary">
+                        Unsere Leistungen <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://static.wixstatic.com/media/c3c7b7ec894d4bdba1b587140a0579bd.jpg/v1/fill/w_1440,h_900,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/c3c7b7ec894d4bdba1b587140a0579bd.jpg" alt="Technischer Bauplan mit Händen" fetchpriority="high">
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="leistungen" class="section container">
+            <h2 class="reveal">Unsere Leistungen</h2>
+            
+            <div class="services-grid">
+                <!-- Handel -->
+                <article class="service-card reveal" style="--i:0">
+                    <div class="service-img-wrapper">
+                        <img src="https://static.wixstatic.com/media/b47c211d741147c7a08005e94c4a2d12.jpg/v1/fill/w_300,h_230,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/verschwommen%20Shop.jpg" alt="Elektrofachhandel" loading="lazy">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">Handel</h3>
+                        <p class="service-desc">In unserem Fachhandel können wir durch die jahrelange Zusammenarbeit mit Topmarken höchste Qualität garantieren. Unser kompetentes Fachpersonal steht Ihnen beim Kauf beratend zur Seite.</p>
+                        <button class="service-link trigger-feature" data-feature="Handel Details">
+                            Mehr erfahren <i data-lucide="arrow-right"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Installation -->
+                <article class="service-card reveal" style="--i:1">
+                    <div class="service-img-wrapper" style="background: linear-gradient(135deg, var(--color-highlight) 0%, #1a2026 100%); display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="zap" style="width: 48px; height: 48px; color: var(--color-accent); opacity: 0.8;"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">Installation</h3>
+                        <p class="service-desc">Bei der Beauftragung unseres Elektroinstallationsteams, bekommen Sie zur bestellten Dienstleistung auch eine gesunde Portion Hausverstand geliefert.</p>
+                        <button class="service-link trigger-feature" data-feature="Installation Details">
+                            Mehr erfahren <i data-lucide="arrow-right"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Planung -->
+                <article class="service-card reveal" style="--i:2">
+                    <div class="service-img-wrapper">
+                        <img src="https://static.wixstatic.com/media/e9ec8d_e59b76aea29f475c9ba3cd52c405d598~mv2_d_3433_2285_s_2.jpg/v1/crop/x_255,y_0,w_2924,h_2285/fill/w_293,h_230,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/arbeit-ausrustung-bedienung-257736.jpg" alt="Elektroplanung" loading="lazy">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">Planung</h3>
+                        <p class="service-desc">Ob Elektroplanung für den privaten Haus- und Wohnbau oder für Industrie und Gewerbe – wir erarbeiten durchdachte und zukunftssichere Konzepte für Ihr Projekt.</p>
+                        <button class="service-link trigger-feature" data-feature="Planung Details">
+                            Mehr erfahren <i data-lucide="arrow-right"></i>
+                        </button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Company Section -->
+        <section id="unternehmen" class="company-section">
+            <div class="company-bg">
+                <img src="https://static.wixstatic.com/media/11062b_2042bb7351284f0f982e4787d37415e6f000.jpg/v1/fill/w_1440,h_626,al_c,q_85,usm_0.33_1.00_0.00,enc_avif,quality_auto/11062b_2042bb7351284f0f982e4787d37415e6f000.jpg" alt="Werkstatt Hintergrund" loading="lazy">
+            </div>
+            <div class="container">
+                <div class="company-content-box reveal">
+                    <div class="company-quote">
+                        "In einer Zeit, in welcher der unpersönliche Online-Handel dominiert, setzen wir auf persönliche Beratung."
+                    </div>
+                    <div class="company-text">
+                        <p>Wir, die Firma Elektro Payrhuber sind ein Traditionsunternehmen, das sich durch Qualität, Zuverlässigkeit und echtes Handwerk auszeichnet.</p>
+                        <p>Unser Ziel ist es nicht, Ihnen einfach etwas zu verkaufen, sondern die für Sie beste und nachhaltigste Lösung zu finden. Darauf können Sie sich verlassen.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="container stats-grid">
+                <div class="reveal" style="--i:0">
+                    <div class="stat-number">1955</div>
+                    <div class="stat-label">Firmengründung</div>
+                </div>
+                <div class="reveal" style="--i:1">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Mitarbeiter</div>
+                </div>
+                <div class="reveal" style="--i:2">
+                    <div class="stat-number">&gt;1000</div>
+                    <div class="stat-label">Zufriedene Kunden</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brands Section -->
+        <section class="section container">
+            <h2 class="reveal">Unsere Partner</h2>
+            <p class="text-muted reveal">Wir vertrauen auf die Qualität führender Hersteller.</p>
+            
+            <div class="brands-grid reveal">
+                <div class="brand-item">MIELE</div>
+                <div class="brand-item">BOSCH</div>
+                <div class="brand-item">SIEMENS</div>
+                <div class="brand-item">LIEBHERR</div>
+                <div class="brand-item">GIRA</div>
+                <div class="brand-item">BUSCH-JAEGER</div>
+                <div class="brand-item">HAGER</div>
+                <div class="brand-item">PHILIPS</div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="kontakt" class="section container">
+            <div class="contact-grid">
+                <div class="reveal">
+                    <h2>Kontaktieren Sie uns</h2>
+                    <p class="text-muted" style="margin-bottom: var(--space-8);">Wir freuen uns auf Ihre Anfrage oder Ihren Besuch in unserem Fachgeschäft.</p>
+                    
+                    <div class="contact-block">
+                        <h3><span class="icon-text"><i data-lucide="map-pin"></i> Adresse</span></h3>
+                        <div class="contact-row">
+                            Bahnhofstraße 29<br>
+                            4655 Vorchdorf<br>
+                            ÖSTERREICH
+                        </div>
+                    </div>
+
+                    <div class="contact-block">
+                        <h3><span class="icon-text"><i data-lucide="phone"></i> Telefon & E-Mail</span></h3>
+                        <div class="contact-row">
+                            <a href="tel:+4376146221" class="icon-text">+43 7614 6221</a>
+                        </div>
+                        <div class="contact-row">
+                            <a href="mailto:office@elektropayrhuber.at" class="icon-text">office@elektropayrhuber.at</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal" style="--i:1">
+                    <div class="contact-block">
+                        <h3><span class="icon-text"><i data-lucide="clock"></i> Öffnungszeiten</span></h3>
+                        <div class="contact-row">
+                            <span style="width: 50px;">Mo, Di:</span> 07:00 - 12:00 & 13:00 - 16:30
+                        </div>
+                        <div class="contact-row">
+                            <span style="width: 50px;">Mi:</span> 07:00 - 12:00
+                        </div>
+                        <div class="contact-row">
+                            <span style="width: 50px;">Do, Fr:</span> 07:00 - 12:00 & 13:00 - 16:30
+                        </div>
+                    </div>
+
+                    <div class="contact-block" style="margin-top: var(--space-8); padding: var(--space-6); background: var(--color-surface); border-left: 4px solid var(--color-accent);">
+                        <h3>Karriere</h3>
+                        <p class="text-muted">Sollten Sie an einer Mitarbeit in unserem Team interessiert sein, senden Sie Ihre Bewerbung bitte an:</p>
+                        <a href="mailto:office@elektropayrhuber.at" class="btn btn-outline" style="margin-top: var(--space-2);">Bewerbung senden</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <span class="logo">Elektro Payrhuber</span>
+                <p class="footer-tagline">Präzision, Hausverstand und persönliche Beratung seit 1955.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+                    <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="footer-heading">Navigation</h4>
+                <ul class="footer-list">
+                    <li><a href="#leistungen">Leistungen</a></li>
+                    <li><a href="#unternehmen">Unternehmen</a></li>
+                    <li><a href="#kontakt">Kontakt</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-heading">Rechtliches</h4>
+                <ul class="footer-list">
+                    <li><button class="trigger-demo">Impressum</button></li>
+                    <li><button class="trigger-demo">Datenschutz</button></li>
+                    <li><button class="trigger-demo">AGB</button></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Elektro Payrhuber — All original content, images & trademarks are property of their respective owners. Website rebuilt by Benedict Jaros.</p>
+        </div>
+    </footer>
+
+    <!-- Placeholder Feature Modal -->
+    <div id="feature-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+        <div class="modal-card">
+            <button class="modal-close" aria-label="Schließen"><i data-lucide="x"></i></button>
+            <h2 id="feature-modal-title" class="modal-title">Feature</h2>
+            <p class="modal-body">This feature will be live once the website is launched and configured. Contact us in the meantime — we'd love to hear from you.</p>
+            <button class="btn btn-primary modal-close-btn">Verstanden</button>
+        </div>
+    </div>
+
+    <!-- Legal Demo Modal -->
+    <div id="demo-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+        <div class="modal-card">
+            <button class="modal-close" aria-label="Schließen"><i data-lucide="x"></i></button>
+            <h2 id="demo-modal-title" class="modal-title">Rechtliche Hinweise</h2>
+            <p class="modal-body">Diese Website ist ein Demo-Remake und wurde nicht von oder für das Unternehmen erstellt. Die Inhalte dienen ausschließlich Demonstrationszwecken. Für unsere eigenen rechtlichen Informationen:</p>
+            <div class="modal-links">
+                <a href="https://benedictjaros.com/impressum" target="_blank">Impressum</a>
+                <a href="https://benedictjaros.com/datenschutz" target="_blank">Datenschutz</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Banner -->
+    <div id="cookie-banner" class="cookie-banner">
+        <p class="cookie-text">Wir verwenden Cookies, um Ihre Erfahrung auf unserer Website zu verbessern. Durch die weitere Nutzung stimmen Sie unserer <button class="trigger-demo" style="text-decoration: underline; color: inherit;">Datenschutzerklärung</button> zu.</p>
+        <div class="cookie-actions">
+            <button id="cookie-decline" class="btn btn-outline">Ablehnen</button>
+            <button id="cookie-accept" class="btn btn-primary">Akzeptieren</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Icons
+            lucide.createIcons();
+
+            // Mobile Navigation
+            const navToggle = document.querySelector('.nav-toggle');
+            const mobileOverlay = document.querySelector('.mobile-overlay');
+            const mobileLinks = document.querySelectorAll('.mobile-nav-list a');
+
+            function toggleMenu() {
+                const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+                navToggle.setAttribute('aria-expanded', !isExpanded);
+                mobileOverlay.classList.toggle('active');
+                document.body.style.overflow = isExpanded ? '' : 'hidden';
+            }
+
+            navToggle.addEventListener('click', toggleMenu);
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (mobileOverlay.classList.contains('active')) {
+                        toggleMenu();
+                    }
+                });
+            });
+
+            // Scroll Reveal
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12 });
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // Modals Logic
+            function setupModal(triggerSelector, modalId, titleUpdater = null) {
+                const triggers = document.querySelectorAll(triggerSelector);
+                const modal = document.getElementById(modalId);
+                const closeBtns = modal.querySelectorAll('.modal-close, .modal-close-btn');
+
+                function openModal(e) {
+                    e.preventDefault();
+                    if (titleUpdater) titleUpdater(e, modal);
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeModal() {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+
+                triggers.forEach(trigger => trigger.addEventListener('click', openModal));
+                closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
+                
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && modal.classList.contains('active')) {
+                        closeModal();
+                    }
+                });
+            }
+
+            // Setup Feature Modal
+            setupModal('.trigger-feature', 'feature-modal', (e, modal) => {
+                const featureName = e.currentTarget.getAttribute('data-feature');
+                modal.querySelector('.modal-title').textContent = featureName;
+            });
+
+            // Setup Demo Modal
+            setupModal('.trigger-demo', 'demo-modal');
+
+            // Cookie Banner
+            const cookieBanner = document.getElementById('cookie-banner');
+            const btnAccept = document.getElementById('cookie-accept');
+            const btnDecline = document.getElementById('cookie-decline');
+
+            if (!localStorage.getItem('cookie_consent')) {
+                setTimeout(() => {
+                    cookieBanner.classList.add('active');
+                }, 1000);
+            }
+
+            function handleCookieChoice(choice) {
+                localStorage.setItem('cookie_consent', choice);
+                cookieBanner.classList.remove('active');
+            }
+
+            btnAccept.addEventListener('click', () => handleCookieChoice('accepted'));
+            btnDecline.addEventListener('click', () => handleCookieChoice('declined'));
+        });
+    </script>
+</body>
+</html>
